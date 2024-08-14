@@ -1,3 +1,4 @@
+<?php
 require 'vendor/autoload.php';
 
 use Aws\DynamoDb\DynamoDbClient;
@@ -16,7 +17,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 $client = new DynamoDbClient([
     'region'  => 'us-east-1',
     'version' => 'latest',
-    // No need to specify credentials explicitly
+    'credentials' => [
+        'key'    => 'aws-access-key', //input your aws access key
+        'secret' => 'aws-secret-key', //input your aws secret key
+    ],
 ]);
 
 $tableName = 'GuestBook';
@@ -90,6 +94,7 @@ try {
                 <th>Name</th>
                 <th>Country</th>
             </tr>";
+
         foreach ($result['Items'] as $item) {
             $email = $item['Email']['S'];
             $name = $item['Name']['S'];
@@ -100,6 +105,7 @@ try {
                 <td>{$country}</td>
             </tr>";
         }
+
         echo "</table>";
     } else {
         echo "<div class='no-guests'>No guests found in the GuestBook.</div>";
